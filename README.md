@@ -16,14 +16,14 @@ jsdoc -c jsdoc.json -r -t default docs
   available for usage. This way, it's possible to insert technical notes from the source
   code into the documentation.
 
-  ## Parameters of `publish()`
+  # Parameters of `publish()`
 
-  ## Parameter `taffyData`
+  ### Parameter `taffyData`
 
   A table containing *all* data collected from the source code, related to jsdoc generation.
   See below for more info and example outputs.
 
-  ### `env`
+  ### Parameter `env`
 
   Example of `env` variable:
 
@@ -71,9 +71,9 @@ jsdoc -c jsdoc.json -r -t default docs
 }
 ```
 
-  ## taffyData
+  # taffyData
 
-  This is a parameter to `publish`. It's a table containing *all* data collected from the
+  This is a parameter to `publish()`. It's a table containing *all* data collected from the
   source code, related to jsdoc generation.
 
   I can't find any way to return a list of fields for the data items in the taffyDB docs,
@@ -89,8 +89,8 @@ jsdoc -c jsdoc.json -r -t default docs
   Returns an array with all items with `name === 'Label'`.
   Example output of one of these items, for a class:
 
+*In these examples, ending block comments redacted to '* /'*
 ```
-// Ending block comments redacted to '* /'.
 {
   "comment":"/**\n * A Label to be used for Nodes or Edges.\n * /",
   "meta":{
@@ -168,14 +168,14 @@ A Label to be used for Nodes or Edges.
 }]
 ```
 
-  ## `jsdoc` template rendering
+  # `jsdoc` template rendering
 
   See `function createRenderer(fromDir, data)` in code for usage.
 
   There are two calls for rendering templates:
  
-  - var html = renderer.render(inFile, docData);
-  - var html = renderer.partial(inFile, docData);
+  - `var html = renderer.render(inFile, docData);`
+  - `var html = renderer.partial(inFile, docData);`
  
   The difference is that `render()` will use a default layout template, if present, which
   will encapsulate all html. This can be set by:
