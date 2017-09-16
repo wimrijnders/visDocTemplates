@@ -1,0 +1,10 @@
+<?js
+    var self = this;
+    docs.forEach(function(doc, i) {
+?>
+<?js= title ?>
+<?js= self.partial('docs/myPartial.tmpl', 'hello') ?>
+<?js= self.helper('hello') ?>
+<?js /* = self.helper2() */ ?>
+<?js= doc ?>
+<?js }); ?>
