@@ -6,6 +6,20 @@ jsdoc -c jsdoc.json -r -t default docs
 **Note:** In this demo, the final command line parameter is not used. It is needed here for jsdoc,
           which complains if no input files are specified.
 
+
+The input is taken from directory `doc`, which is scanned recursively
+The output goes to directory `gen`.
+
+
+The template generation is set up so that:
+
+- Files ending in `.tmpl` are skipped
+- All non-html files are plain copied
+- html-files *can* contain `<?js ?>` tags, but this is not required
+
+The only file that has been changed is `docs/data/dataSet.html`.
+In here, partials have been added to illustrate how common page elements can be DRY'd.
+
   ## Overview
 
   This code was derived for the `default` template as included in module `jsdoc`.
@@ -15,6 +29,7 @@ jsdoc -c jsdoc.json -r -t default docs
   the complete documentation information, as collected by `jsdoc` from the source, is
   available for usage. This way, it's possible to insert technical notes from the source
   code into the documentation.
+  
 
   # Parameters of `publish()`
 
@@ -89,7 +104,7 @@ jsdoc -c jsdoc.json -r -t default docs
   Returns an array with all items with `name === 'Label'`.
   Example output of one of these items, for a class:
 
-*In these examples, ending block comments redacted to '* /'*
+*In these examples, ending block comments redacted to ' * /'*
 ```
 {
   "comment":"/**\n * A Label to be used for Nodes or Edges.\n * /",
