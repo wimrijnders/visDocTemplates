@@ -1,15 +1,18 @@
 # Usage
+
 ```
-jsdoc -c jsdoc.json -r -t default docs
+jsdoc -c jsdoc.json -r -t docs -d gen ../github/vis/lib
+
 ```
 
-**Note:** In this demo, the final command line parameter is not used. It is needed here for jsdoc,
-          which complains if no input files are specified.
+- `-c`: use this config file for `jsdoc`
+- `-r`: Recurse into source directory `../github/vis/lib`
+- `-t`: Use template in path `docs`
+- `-d`: Generated html files put in `gen`
+- Source files to parse by `jsdoc` taken from `../github/vis/lib`
 
 
-The input is taken from directory `doc`, which is scanned recursively
-The output goes to directory `gen`.
-
+## Notes
 
 The template generation is set up so that:
 
@@ -20,51 +23,41 @@ The template generation is set up so that:
 The only file that has been changed is `docs/data/dataSet.html`.
 In here, partials have been added to illustrate how common page elements can be DRY'd.
 
-  ## Overview
 
-  This code was derived for the `default` template as included in module `jsdoc`.
+## Intention
 
-  The idea is to use the HTML documents as template documents, which is an inversion
-  of what templates normally do. The added value of using `jsdoc` for this, is that
-  the complete documentation information, as collected by `jsdoc` from the source, is
-  available for usage. This way, it's possible to insert technical notes from the source
-  code into the documentation.
-  
+The `docs` directory is treated as a `jsdoc` template, in which the html-files are the template files.
+This allows for a gradual adaptation of the html-files to templates; unchanged html-files will pass 
+through `jsdoc` unchanged.
 
-  # Parameters of `publish()`
+The added value of using `jsdoc` for documentation generation, is that
+the complete documentation information, as collected by `jsdoc` from the source, is
+available for usage. This way, it's possible to insert technical notes from the source
+code into the documentation.
+
+----
+
+# Usage of and Notes on Source Code
+
+  ## Parameters of `publish()`
 
   ### Parameter `taffyData`
 
   A table containing *all* data collected from the source code, related to jsdoc generation.
   See below for more info and example outputs.
 
-  ### Parameter `env`
+  ### Parameter `opt`
 
-  Example of `env` variable:
+  Example of `opt` variable:
 
 ```
 {
-  "run":{"start":"2017-09-16T05:06:45.621Z","finish":null},
-  "args":["-c","jsdoc.json","-r","-t","default","../github/vis/lib/network/"],
-  "conf":{
-    "plugins":["/usr/lib/node_modules/jsdoc/plugins/markdown.js"],
-    "recurseDepth":10,
-    "source":{"includePattern":".+\\.js(doc|x)?$","excludePattern":""},
-    "sourceType":"module",
-    "tags":{"allowUnknownTags":true,"dictionaries":["jsdoc","closure"]},
-    "templates":{"monospaceLinks":false,"cleverLinks":false}
-  },
-      "dirname":"/usr/lib/node_modules/jsdoc",
-  "pwd":"/home/wim/projects/jsdoc",
-  "opts":{
-    "_":["../github/vis/lib/network/"],
-    "configure":"jsdoc.json",
-    "recurse":true,
-    "template":"/home/wim/projects/jsdoc/default",
-    "destination":"./out/","encoding":"utf8"
-  },
-  "sourceFiles":[ <list of full path names of all source files used as input> ],
-  "version":{"number":"3.5.4","revision":"Fri, 04 Aug 2017 22:05:27 GMT"}
+  "_":["../github/vis/lib/network/"],
+  "configure":"jsdoc.json",
+  "recurse":true,
+  "template":"/home/wim/projects/jsdoc/default",
+  "destination":"./out/",
+  "encoding":"utf8"
 }
 ```
 
@@ -86,7 +79,32 @@ In here, partials have been added to illustrate how common page elements can be 
 }
 ```
 
-  # taffyData
+  ## Global variable `env`
+
+  This contains addition info for the current execution of `jsdoc`. Example of `env` variable:
+
+```
+{
+  "run":{"start":"2017-09-16T05:06:45.621Z","finish":null},
+  "args":["-c","jsdoc.json","-r","-t","default","../github/vis/lib/network/"],
+  "conf":{
+    "plugins":["/usr/lib/node_modules/jsdoc/plugins/markdown.js"],
+    "recurseDepth":10,
+    "source":{"includePattern":".+\\.js(doc|x)?$","excludePattern":""},
+    "sourceType":"module",
+    "tags":{"allowUnknownTags":true,"dictionaries":["jsdoc","closure"]},
+    "templates":{"monospaceLinks":false,"cleverLinks":false}
+  },
+  "dirname":"/usr/lib/node_modules/jsdoc",
+  "pwd":"/home/wim/projects/jsdoc",
+  "opts":{ <same as parameter 'opt' above> },
+  "sourceFiles":[ <list of full path names of all js-source files used as input> ],
+  "version":{"number":"3.5.4","revision":"Fri, 04 Aug 2017 22:05:27 GMT"}
+}
+```
+
+
+  ## taffyData
 
   This is a parameter to `publish()`. It's a table containing *all* data collected from the
   source code, related to jsdoc generation.
@@ -183,7 +201,7 @@ A Label to be used for Nodes or Edges.
 }]
 ```
 
-  # `jsdoc` template rendering
+  ## `jsdoc` template rendering
 
   See `function createRenderer(fromDir, data)` in code for usage.
 

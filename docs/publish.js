@@ -2,24 +2,16 @@
   Demo template, showing how documentation can be generated for `vis.js`.
 
   ------------------------------------------------------------------------------
-  ## Notes
+  ## Notes on `jsdoc` code
 
-  ### Stuff I learned here which looks useful. 
+  // claim some special filenames in advance, so the All-Powerful Overseer of Filename Uniqueness
+  // doesn't try to hand them out later
+  indexUrl = helper.getUniqueFilename('index');
+  // don't call registerLink() on this one! 'index' is also a valid longname
 
-  var toDir = fs.toDir(outFile);                // Isolates the path from the full filename
-  fs.mkPath(toDir);                             // Create the directory with all path elements
-  var docs = fs.readFileSync(fileName, 'utf8'); // Read contents of file 'fileName'
-  fs.writeFileSync(outFile, html, 'utf8');      // Write buffer 'html' to file 'outFile'
+  globalUrl = helper.getUniqueFilename('global');
+  helper.registerLink('global', globalUrl);
 
-  ### specific to `jsdoc`.
-
-    // claim some special filenames in advance, so the All-Powerful Overseer of Filename Uniqueness
-    // doesn't try to hand them out later
-    indexUrl = helper.getUniqueFilename('index');
-    // don't call registerLink() on this one! 'index' is also a valid longname
-
-    globalUrl = helper.getUniqueFilename('global');
-    helper.registerLink('global', globalUrl);
   ============================================================================== */
 'use strict';
 //var taffy = require('taffydb').taffy;  // not really required here, left for reference
@@ -32,15 +24,12 @@ var path = require('jsdoc/path');
 var template = require('jsdoc/template');
 
 
-
-
 /**
  * Set up the template rendering engine.
  */
 function createRenderer(fromDir, data) {
   var renderer = new template.Template(fromDir);  // Param is the template source directory.
                                                   // All template files are relative to this directory!
-
   /**
    * Example helper method
    * 
@@ -84,32 +73,35 @@ function createRenderer(fromDir, data) {
     @param {Tutorial} tutorials
  */
 exports.publish = function(taffyData, opts, tutorials) {
-  var fromDir = path.join('./docs');
+  //console.log(JSON.stringify(opts, null, 2));
+
+  var fromDir = path.resolve(opts.template);
+  var toDir = path.join(opts.destination);
   var renderer = createRenderer(fromDir, taffyData);
 
-  var outDir = path.join('./gen');
-  var myFiles = fs.ls(fromDir, 3);
+  var docFiles = fs.ls(fromDir, 3);
+  docFiles.forEach(function(fileName) {
+    // Template filenames need to be relative to template source dir
+    var relName = path.relative(fromDir, fileName);
+    var outFile = path.join(toDir, relName);
 
-  myFiles.forEach(function(fileName) {
-  if (/\.tmpl$/.test(fileName)) return;   // Skip handling of .tmpl files; these are used as partials only
+    if (/publish.js$/.test(fileName)) return;   // Skip self
+    if (/\.tmpl$/.test(fileName)) return;       // Skip .tmpl files; these are used as partials only
 
-    var outFile = fileName.replace(fromDir, outDir);
-
-    if (!/\.html$/.test(fileName)) {        // Just plain copy over non-html files
-      var toDir = fs.toDir(outFile);
-      fs.mkPath(toDir);
-      fs.copyFileSync(fileName, toDir);
+    if (!/\.html$/.test(fileName)) {
+      // Just plain copy over non-html files
+      var tmpDir = fs.toDir(outFile);
+      fs.mkPath(tmpDir);
+      fs.copyFileSync(fileName, tmpDir);
       return;
     }
    
     // Render html files as templates 
-    var inFile = fileName.replace(fromDir + '/', '');  // Adjust filename to be relative to template source dir
-    var docData = {};
-
-    var html = renderer.partial(inFile, docData);
+    //console.log(relName);
+    var html = renderer.partial(relName, {});
     fs.mkPath(fs.toDir(outFile));
     fs.writeFileSync(outFile, html, 'utf8');
   });
 
- //console.log(JSON.stringify(env));
+  //console.log(JSON.stringify(env, null, 2));
 };
